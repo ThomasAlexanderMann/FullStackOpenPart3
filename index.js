@@ -50,6 +50,26 @@ app.get("/api/persons/:id", (request, response) => {
 app.post("/api/persons/", (request, response) => {
   const body = request.body;
 
+  if (!body.name) {
+    return response.status(400).json({
+      error: "name missing",
+    });
+  }
+
+  if (!body.number) {
+    return response.status(400).json({
+      error: "number missing",
+    });
+  }
+
+  const alreadyInThePhonebook = phonebook.find((p) => p.name === body.name);
+
+  if (alreadyInThePhonebook) {
+    return response.status(400).json({
+      error: `${alreadyInThePhonebook.name} is already in the phonebook`,
+    });
+  }
+
   const newPerson = {
     id: Math.floor(Math.random() * 100000),
     name: body.name,
